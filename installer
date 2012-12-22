@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+echo "Checking for SSH key, generating one if it doesn't exist ..."
+if [ ! -f ~/.ssh/id_rsa.pub ]
+then
+	ssh-keygen -t rsa -C "_@freeaddr.info"
+fi
+
+echo "*****************************************************************"
+cat ~/.ssh/id_rsa.pub
+echo "*****************************************************************"
+
+read -n1 -r -p "Press any key to continue..." key
+
+echo "Setting up zsh"
+git clone --recursive git@github.com:eataix/prezto.git "${HOME}/.zprezto"
+${HOME}/.zprezto/installer.sh
+
+echo "Making directories"
+mkdir ${HOME}/bin
+mkdir ${HOME}/code
+mkdir ${HOME}/utils
+
+echo "tmux"
+git clone git@github.com:eataix/tmux-powerline.git ${HOME}/utils/tmux-powerline
+git clone git@github.com:seebi/tmux-colors-solarized.git ${HOME}/utils/tmux-colors-solarized
+
+export INSTALL_DIR=${HOME}/utils/tmux-powerline && \
+	${HOME}/utils/tmux-powerline/installer.sh
+
+echo "vim"
+git clone git@github.com:eataix/vim-configs.git ${HOME}/.vim
+${HOME}/.vim/installer.sh
